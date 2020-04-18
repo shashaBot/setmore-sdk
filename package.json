@@ -1,11 +1,11 @@
 {
   "name": "setmore",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A javascript sdk for Setmore appointments",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/1mg-shashwat/setmore",
+  "repository": "https://github.com/shashaBot/setmore-sdk",
   "license": "MIT",
   "keywords": [],
   "scripts": {
@@ -51,6 +51,7 @@
     "node": ">=8.9"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "sha.js": "^2.4.11"
   },
   "devDependencies": {
