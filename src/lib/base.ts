@@ -4,8 +4,9 @@ export interface ISetmoreAttributes {
   [key: string]: any
 }
 
-export interface ISetmoreResponse {
-  [key: string]: any;
+export interface ISetmoreResponse<T=any> {
+  data: T;
+  [key: string]: any
 }
 
 export interface IResourcePath {
@@ -13,41 +14,44 @@ export interface IResourcePath {
   CREATE?: string
 }
 
+interface ISetmoreAuthData {
+  token: {
+    access_token: string,
+    [key: string]: any
+  },
+  [key: string]: any
+}
+
 export type ResourcePath = IResourcePath | string;
 
 export function isIResourcePath(x: any): x is IResourcePath {
-  return typeof x === 'object' && "GET" in x;
+  return typeof x === "object" && "GET" in x;
 }
 
 export default abstract class BaseApi {
+  public static readonly  baseUri: string = 'https://developer.setmore.com/api/v1';
+  public static readonly authTokenPath: string = '/o/oauth2/token';
+
   public abstract readonly RESOURCE_PATH: ResourcePath = {
     GET: '/',
     CREATE: '/'
   };
-  public readonly baseUri: string = 'https://developer.setmore.com/api/v1';
 
-  public accessToken: string | null;
+  public refreshToken: string;
+  public accessToken: string;
   private api: AxiosInstance;
 
-
-  constructor(accessToken: string | null = null) {
-    this.accessToken = accessToken;
+  constructor() {
     // create axios api
     this.api = axios.create()
-    // request interceptors
-    // this.api.interceptors.request.use((params: AxiosRequestConfig) => {
-    //   ...params
-    // })
+  }
 
-    // response interceptors
-    // this.api.interceptors.response.user((params: AxiosResponse) => {
-    //   ...params
-    // })
-
-
+  public setRefreshToken(token: string) {
+    this.refreshToken = token;
   }
 
   public get(attributes: ISetmoreAttributes): Promise<ISetmoreResponse> {
+
     const requestConfig: AxiosRequestConfig = {
       params: attributes,
       ...this.makeRequestConfig()
@@ -61,20 +65,18 @@ export default abstract class BaseApi {
     }
 
     const config: AxiosRequestConfig = {
+      ...this.makeRequestConfig(this.RESOURCE_PATH.CREATE),
       data: attributes,
-      method: 'POST',
-      ...this.makeRequestConfig(this.RESOURCE_PATH.CREATE)
+      method: 'POST'
     }
     return this.makeRequest(config);
   }
 
   protected makeRequestConfig(url?: string): AxiosRequestConfig {
     // tslint:disable-next-line: no-console
-    console.log('blahblah')
-    // tslint:disable-next-line: no-console
     console.log(this.accessToken)
     const requestConfig: AxiosRequestConfig = {
-      baseURL: this.baseUri,
+      baseURL: BaseApi.baseUri,
       headers: {
         Authorization: `Bearer ${this.accessToken}`
       },
@@ -84,6 +86,20 @@ export default abstract class BaseApi {
   }
 
   protected async makeRequest(requestConfig: AxiosRequestConfig = this.makeRequestConfig()): Promise<ISetmoreResponse> {
-    return this.api(requestConfig);
+    try {
+      const response = await this.api.request<ISetmoreResponse>(requestConfig);
+      return response;
+    }
+    catch (e) {
+      if(!this.refreshToken) { throw Error('RefreshToken not set!'); }
+      const authResponse = await this.api.request<ISetmoreResponse<ISetmoreAuthData>>({
+        url: BaseApi.authTokenPath,
+        params: { refreshToken: this.refreshToken },
+        baseURL: BaseApi.baseUri
+      });
+      this.accessToken = authResponse.data.data.token.access_token;
+      requestConfig.headers.Authorization = `Bearer ${this.accessToken}`;
+      return this.api.request<ISetmoreResponse>(requestConfig);
+    }
   }
 }

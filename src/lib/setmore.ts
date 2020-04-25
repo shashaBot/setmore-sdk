@@ -4,6 +4,7 @@ import Customer from './customer';
 import Service from './service';
 import Staff from './staff';
 import Timeslot from './timeslot';
+import BaseApi from './base';
 
 class Setmore {
   public staff: Staff | undefined;
@@ -13,38 +14,19 @@ class Setmore {
   public timeslots: Timeslot | undefined;
   public auth: Auth;
 
-  private refreshToken: string | null = null;
-  private accessToken: string | null = null;
+  private apis: BaseApi[];
 
   constructor() {
-    this.auth = new Auth();
+    this.staff = new Staff();
+    this.appointments = new Appointment();
+    this.customers = new Customer();
+    this.timeslots = new Timeslot();
+
+    this.apis = [this.staff, this.appointments, this.customers, this.timeslots]
   }
 
-  public async setRefreshToken (token:string) {
-    this.refreshToken = token;
-    await this.initialize(this.refreshToken);
-  }
-
-  private async initialize(refreshToken: string): Promise<void> {
-    this.accessToken = await this.getAccessToken(refreshToken);
-    this.staff = new Staff(this.accessToken);
-    this.appointments = new Appointment(this.accessToken);
-    this.services = new Service(this.accessToken);
-    this.appointments = new Appointment(this.accessToken);
-    this.customers = new Customer(this.accessToken);
-    this.timeslots = new Timeslot(this.accessToken);
-  }
-
-  private async getAccessToken(refreshToken:string): Promise<string> {
-    try {
-      const response = await this.auth.get({ refreshToken });
-      return (response.data.data.token.access_token as string);
-    }
-    catch(e) {
-      // tslint:disable-next-line: no-console
-      console.error(e)
-      return 'blah';
-    }
+  public setRefreshToken (token:string): void {
+    this.apis.forEach( api => api.setRefreshToken(token))
   }
 
 }

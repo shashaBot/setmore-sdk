@@ -6,7 +6,7 @@ export default class Customer extends BaseApi {
     CREATE: '/customer/create'
   };
 
-  constructor(accessToken: string) {
-    super(accessToken)
+  constructor() {
+    super()
   }
 }

@@ -6,8 +6,8 @@ export default class Appointment extends BaseApi {
     CREATE: '/bookingapi/appointment/create'
   };
 
-  constructor(accessToken: string) {
-    super(accessToken);
+  constructor() {
+    super();
   }
 
   public async updateLabel(appointmentKey: string, attributes: {label: string}): Promise<ISetmoreResponse> {
