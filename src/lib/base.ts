@@ -50,7 +50,7 @@ export default abstract class BaseApi {
     this.refreshToken = token;
   }
 
-  public get(attributes: ISetmoreAttributes): Promise<ISetmoreResponse> {
+  public get(attributes: ISetmoreAttributes = {}): Promise<ISetmoreResponse> {
 
     const requestConfig: AxiosRequestConfig = {
       params: attributes,
@@ -73,8 +73,6 @@ export default abstract class BaseApi {
   }
 
   protected makeRequestConfig(url?: string): AxiosRequestConfig {
-    // tslint:disable-next-line: no-console
-    console.log(this.accessToken)
     const requestConfig: AxiosRequestConfig = {
       baseURL: BaseApi.baseUri,
       headers: {

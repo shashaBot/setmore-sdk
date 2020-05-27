@@ -21,8 +21,8 @@ class Setmore {
     this.appointments = new Appointment();
     this.customers = new Customer();
     this.timeslots = new Timeslot();
-
-    this.apis = [this.staff, this.appointments, this.customers, this.timeslots]
+    this.services = new Service();
+    this.apis = [this.staff, this.appointments, this.customers, this.timeslots, this.services]
   }
 
   public setRefreshToken (token:string): void {
