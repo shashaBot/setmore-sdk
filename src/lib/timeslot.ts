@@ -3,8 +3,8 @@ import BaseApi, { ISetmoreAttributes, ISetmoreResponse } from './base';
 export default class Timeslot extends BaseApi {
   public readonly RESOURCE_PATH = '/bookingapi/slots';
 
-  constructor() {
-    super()
+  constructor(apiClient) {
+    super(apiClient)
   }
 
   public async get(attributes: ISetmoreAttributes): Promise<ISetmoreResponse> {

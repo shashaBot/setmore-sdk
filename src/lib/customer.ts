@@ -6,7 +6,7 @@ export default class Customer extends BaseApi {
     CREATE: '/bookingapi/customer/create'
   };
 
-  constructor() {
-    super()
+  constructor(apiClient) {
+    super(apiClient)
   }
 }

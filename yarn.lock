@@ -677,6 +677,11 @@ ava@2.2.0:
     update-notifier "^3.0.1"
     write-file-atomic "^3.0.0"
 
+axios-auth-refresh@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/axios-auth-refresh/-/axios-auth-refresh-2.2.7.tgz#922f458129ed653d9bd0d732743bf9bba4524f12"
+  integrity sha512-5gdrwRG3luW/BHIwyh7vZk9AFkC3tOkWhE4yJJW0Dno36kcTHN8V87SxH52m3HF8bQpORaV3RNmuwlOT8pKOOw==
+
 axios@^0.19.2:
   version "0.19.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
